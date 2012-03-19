@@ -36,7 +36,13 @@ import java.lang.Math;
  */
 public class Particle2DPanel extends JPanel {
 	
-	public Simulation s;
+	//Modified for JOGL Sample
+	public static final int xmax = 700;
+	public static final int ymax = 500;
+	
+	
+	public static Simulation s;
+	//End modified for JOGL Sample
 
 	public String fileName;
 	

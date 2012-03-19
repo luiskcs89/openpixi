@@ -745,6 +745,11 @@ public class MainControlApplet extends JApplet {
 		web.pack();
 		web.setVisible(true);
 		web.setSize(1000, 500);
+		
+		//Added for JOGL Sample
+		Sample joglSample = new Sample();
+		new Thread((Runnable)joglSample).start();
+        //End added for JOGL Sample
 
 		applet.init();
 	}
