@@ -139,6 +139,7 @@ public class MainControlApplet extends JApplet {
 			int id  = cb.getSelectedIndex();
 			particlePanel.resetAnimation(id);
 			particlePanel.resetAnimation(initComboBox.getSelectedIndex());
+			Sample.initVertices();
 			setSlidersValue();
 		}
 	}
