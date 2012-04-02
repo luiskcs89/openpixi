@@ -7,6 +7,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.nio.FloatBuffer;
+import java.util.Arrays;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
@@ -17,10 +18,10 @@ import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.fixedfunc.GLLightingFunc;
 import javax.media.opengl.fixedfunc.GLMatrixFunc;
 import javax.media.opengl.glu.GLU;
-import com.jogamp.common.nio.Buffers;
 
 import org.openpixi.pixi.physics.Particle2D;
 
+import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.util.Animator;
 
 public class Sample implements GLEventListener, KeyListener, Runnable {
@@ -58,16 +59,7 @@ public class Sample implements GLEventListener, KeyListener, Runnable {
 				gl.glLoadIdentity();
 				gl.glClear(GL.GL_DEPTH_BUFFER_BIT);
 
-				if (par.charge > 0) {
-					color[0] = 0.0f;
-					color[1] = 0.0f;
-					color[2] = 1.0f;
-				} else {
-					color[0] = 1.0f;
-					color[1] = 0.0f;
-					color[2] = 0.0f;
-				}
-				colorBuffer.put(color);
+				colorBuffer.put(Arrays.copyOfRange(color, j * 3, j * 3 + 3));
 				colorBuffer.rewind();
 
 				gl.glEnableClientState(GL2.GL_COLOR_ARRAY);
@@ -102,17 +94,17 @@ public class Sample implements GLEventListener, KeyListener, Runnable {
 		// glUseProgramObjectARB(0);
 		((Component) gLDrawable).addKeyListener(this);
 
-		color = new float[3];
-		colorBuffer = Buffers.newDirectFloatBuffer(3);
 		initVertices();
 	}
 
 	public static void initVertices() {
 		synchronized (lockObject) {
 			Particle2D par = Particle2DPanel.s.particles.get(0);
-			numVertices = (int) (par.radius * 360 / 15);
+			numVertices = (int) (par.radius * 6);
 			vertices = null;
 			buffer = null;
+			color = null;
+			colorBuffer = null;
 			vertices = new float[numVertices * 3];
 			buffer = Buffers.newDirectFloatBuffer(numVertices * 3);
 			float hop = (360f / numVertices);
@@ -123,6 +115,23 @@ public class Sample implements GLEventListener, KeyListener, Runnable {
 				vertices[i * 3 + 1] = (float) Math.sin(degInRad)
 						* ((float) par.radius / 80f);
 				vertices[i * 3 + 2] = 0.0f;
+			}
+			color = new float[3 * Particle2DPanel.s.particles.size()];
+			colorBuffer = Buffers
+					.newDirectFloatBuffer(3 * Particle2DPanel.s.particles
+							.size());
+			for (int j = 0; j < Particle2DPanel.s.particles.size(); j++) {
+				Particle2D par1 = Particle2DPanel.s.particles.get(j);
+
+				if (par1.charge > 0) {
+					color[j * 3] = 0.0f;
+					color[j * 3 + 1] = 0.0f;
+					color[j * 3 + 2] = 1.0f;
+				} else {
+					color[j * 3] = 1.0f;
+					color[j * 3 + 1] = 0.0f;
+					color[j * 3 + 2] = 0.0f;
+				}
 			}
 			buffer.clear();
 			buffer.put(vertices);
