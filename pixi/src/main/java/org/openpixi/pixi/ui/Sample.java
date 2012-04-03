@@ -50,31 +50,20 @@ public class Sample implements GLEventListener, KeyListener, Runnable {
 		synchronized (lockObject) {
 			final GL2 gl = gLDrawable.getGL().getGL2();
 			gl.glClear(GL.GL_COLOR_BUFFER_BIT);
-
+			gl.glLoadIdentity();
+		    gl.glTranslatef(-3.5f, -2.5f, 0f);
+			gl.glColorPointer(3, GL.GL_FLOAT, 0, colorBuffer);
+			gl.glVertexPointer(3, GL.GL_FLOAT, 0, buffer);
 			for (int j = 0; j < Particle2DPanel.s.particles.size(); j++) {
 				Particle2D par = Particle2DPanel.s.particles.get(j);
-				float drawx = (float) (par.x * 7) / Particle2DPanel.xmax - 3.5f;
-				float drawy = (float) (par.y * 5) / Particle2DPanel.ymax - 2.5f;
-
-				gl.glLoadIdentity();
-				gl.glClear(GL.GL_DEPTH_BUFFER_BIT);
-
+				float drawx = (float) (par.x * 7) / Particle2DPanel.xmax;
+				float drawy = (float) (par.y * 5) / Particle2DPanel.ymax;
 				colorBuffer.put(Arrays.copyOfRange(color, j * 3, j * 3 + 3));
 				colorBuffer.rewind();
-
-				gl.glEnableClientState(GL2.GL_COLOR_ARRAY);
-				gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
-
-				gl.glColorPointer(3, GL.GL_FLOAT, 0, colorBuffer);
-				gl.glVertexPointer(3, GL.GL_FLOAT, 0, buffer);
-
 				gl.glPushMatrix();
 				gl.glTranslatef(drawx, drawy, -10.0f);
 				gl.glDrawArrays(GL2.GL_POLYGON, 0, numVertices);
 				gl.glPopMatrix();
-
-				gl.glDisableClientState(GL2.GL_COLOR_ARRAY);
-				gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
 			}
 		}
 	}
@@ -93,7 +82,9 @@ public class Sample implements GLEventListener, KeyListener, Runnable {
 		gl.glHint(GL2ES1.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST);
 		// glUseProgramObjectARB(0);
 		((Component) gLDrawable).addKeyListener(this);
-
+		gl.glClear(GL.GL_DEPTH_BUFFER_BIT);
+		gl.glEnableClientState(GL2.GL_COLOR_ARRAY);
+		gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
 		initVertices();
 	}
 
